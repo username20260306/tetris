@@ -141,6 +141,23 @@ updateScore();
 
 }
 
+function hardDrop(){
+
+while(!collide(arena,player)){
+player.pos.y++;
+}
+
+player.pos.y--;
+
+merge(arena,player);
+
+playerReset();
+
+arenaSweep();
+
+dropCounter=0;
+
+}
 function collide(arena,player){
 
 const m=player.matrix;
@@ -356,6 +373,11 @@ playerDrop();
 else if(event.key==="ArrowUp"){
 
 playerRotate();
+
+}
+else if(event.code==="Space"){
+
+hardDrop();
 
 }
 
