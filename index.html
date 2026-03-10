@@ -235,11 +235,41 @@ ctx.fillStyle="black";
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
 drawMatrix(arena,{x:0,y:0});
-
+drawGhost();
 drawMatrix(player.matrix,player.pos);
 
 }
+  
+function drawGhost(){
 
+let ghostY = player.pos.y;
+
+while(!collide(arena,{
+pos:{x:player.pos.x,y:ghostY},
+matrix:player.matrix
+})){
+ghostY++;
+}
+
+ghostY--;
+
+player.matrix.forEach((row,y)=>{
+row.forEach((value,x)=>{
+if(value!==0){
+
+ctx.fillStyle="rgba(255,255,255,0.3)";
+ctx.fillRect(
+x+player.pos.x,
+y+ghostY,
+1,
+1
+);
+
+}
+});
+});
+
+}
 function playerDrop(){
 
 player.pos.y++;
@@ -430,5 +460,6 @@ update();
 
 </body>
 </html>
+
 
 
