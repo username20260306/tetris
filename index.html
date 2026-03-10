@@ -25,7 +25,11 @@ border:2px solid white;
 <div>Score: <span id="score">0</span></div>
 
 <canvas id="game" width="240" height="400"></canvas>
-
+<br>
+  Next
+<br>
+<canvas id="next" width="80" height="80"></canvas>
+  
 <p>← → : move　↓ : drop　↑ : rotate</p>
 
 <script>
@@ -34,7 +38,10 @@ const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
 
 ctx.scale(20,20);
-
+const nextCanvas = document.getElementById("next");
+const nextCtx = nextCanvas.getContext("2d");
+nextCtx.scale(20,20);
+  
 const arena=createMatrix(12,20);
 
 const player={
@@ -42,6 +49,8 @@ pos:{x:0,y:0},
 matrix:null,
 score:0
 };
+let nextPiece = null;
+let gameOver = false;
 
 function createMatrix(w,h){
 const matrix=[];
@@ -306,16 +315,45 @@ function playerReset(){
 
 const pieces="TJLOSZI";
 
-player.matrix=createPiece(
-
+if(!nextPiece){
+nextPiece=createPiece(
 pieces[Math.floor(Math.random()*pieces.length)]
+);
+}
 
+player.matrix=nextPiece;
+
+nextPiece=createPiece(
+pieces[Math.floor(Math.random()*pieces.length)]
 );
 
 player.pos.y=0;
 
 player.pos.x=(arena[0].length/2|0)-
 (player.matrix[0].length/2|0);
+
+if(collide(arena,player)){
+alert("GAME OVER");
+gameOver=true;
+}
+
+drawNext();
+
+}
+
+function drawNext(){
+
+nextCtx.fillStyle="black";
+nextCtx.fillRect(0,0,nextCanvas.width,nextCanvas.height);
+
+nextPiece.forEach((row,y)=>{
+row.forEach((value,x)=>{
+if(value!==0){
+nextCtx.fillStyle="red";
+nextCtx.fillRect(x,y,1,1);
+}
+});
+});
 
 }
 
@@ -331,6 +369,7 @@ let dropInterval=1000;
 let lastTime=0;
 
 function update(time=0){
+  if (gameover) return;
 
 const delta=time-lastTime;
 
@@ -391,3 +430,4 @@ update();
 
 </body>
 </html>
+
